@@ -1,6 +1,12 @@
 namespace JobApplier.Infrastructure.Extensions;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using JobApplier.Application.Interfaces;
+using JobApplier.Infrastructure.Persistence;
+using JobApplier.Infrastructure.Persistence.Repositories;
+using JobApplier.Infrastructure.Security;
+using Microsoft.EntityFrameworkCore;
 
 /// <summary>
 /// Infrastructure layer dependency injection extension
@@ -11,21 +17,26 @@ public static class DependencyInjection
         this IServiceCollection services,
         Microsoft.Extensions.Configuration.IConfiguration configuration)
     {
-        // TODO: Register DbContext
-        // services.AddDbContext<ApplicationDbContext>(options =>
-        //     options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+        // Database
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseMySql(connectionString, ServerVersion.Parse("8.0.0-mysql")));
 
-        // TODO: Register repositories
-        // services.AddScoped<IUserRepository, UserRepository>();
-        // services.AddScoped<IResumeRepository, ResumeRepository>();
+        // Repositories
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
-        // TODO: Register external service clients
-        // services.AddScoped<IOpenAiService, OpenAiService>();
-        // services.AddScoped<IOcrService, OcrService>();
-        // services.AddScoped<IFileStorageService, FileStorageService>();
+        // Security Services
+        services.AddSingleton<IPasswordHasher, PasswordHasher>();
 
-        // TODO: Register Unit of Work pattern if applicable
-        // services.AddScoped<IUnitOfWork, UnitOfWork>();
+        // JWT Token Provider
+        var jwtSettings = configuration.GetSection("Jwt");
+        var secretKey = jwtSettings["SecretKey"]!;
+        var issuer = jwtSettings["Issuer"] ?? "JobApplier";
+        var audience = jwtSettings["Audience"] ?? "JobApplierClient";
+        var expirationMinutes = int.Parse(jwtSettings["ExpirationMinutes"] ?? "15");
+
+        services.AddSingleton<IJwtTokenProvider>(new JwtTokenProvider(secretKey, issuer, audience, expirationMinutes));
 
         return services;
     }

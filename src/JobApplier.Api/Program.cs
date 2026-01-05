@@ -22,7 +22,10 @@ var app = builder.Build();
 
 // Use middleware
 app.UseSwaggerDocumentation();
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();

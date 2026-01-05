@@ -1,26 +1,62 @@
 namespace JobApplier.Domain.Entities;
 
 /// <summary>
-/// User entity for authentication and profile management
+/// User entity - authentication and profile management
 /// </summary>
 public class User : Entity
 {
-    public string Email { get; private set; } = string.Empty;
+    private string _email = string.Empty;
+
+    public string Email
+    {
+        get => _email;
+        private set => _email = value.ToLowerInvariant();
+    }
+
     public string FirstName { get; private set; } = string.Empty;
     public string LastName { get; private set; } = string.Empty;
-    public string? PasswordHash { get; private set; }
-    // TODO: Add subscription tier, usage limits, preferences
+    public string PasswordHash { get; private set; } = string.Empty;
     public bool IsActive { get; private set; }
+    public DateTime? EmailConfirmedAt { get; private set; }
+
+    // Navigation property - only for EF Core
+    public virtual ICollection<RefreshToken> RefreshTokens { get; private set; } = new List<RefreshToken>();
 
     public User() { }
 
-    public User(string email, string firstName, string lastName)
+    public User(string email, string firstName, string lastName, string passwordHash)
     {
         Email = email;
         FirstName = firstName;
         LastName = lastName;
+        PasswordHash = passwordHash;
         IsActive = true;
     }
 
-    // TODO: Add business methods (ChangePassword, UpdateProfile, etc.)
+    /// <summary>
+    /// Confirm user email
+    /// </summary>
+    public void ConfirmEmail()
+    {
+        EmailConfirmedAt = DateTime.UtcNow;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    /// <summary>
+    /// Deactivate user account
+    /// </summary>
+    public void Deactivate()
+    {
+        IsActive = false;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    /// <summary>
+    /// Update password hash
+    /// </summary>
+    public void UpdatePasswordHash(string newPasswordHash)
+    {
+        PasswordHash = newPasswordHash;
+        UpdatedAt = DateTime.UtcNow;
+    }
 }
