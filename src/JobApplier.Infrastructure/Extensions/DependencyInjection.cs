@@ -6,6 +6,8 @@ using JobApplier.Application.Interfaces;
 using JobApplier.Infrastructure.Persistence;
 using JobApplier.Infrastructure.Persistence.Repositories;
 using JobApplier.Infrastructure.Security;
+using JobApplier.Infrastructure.FileHandling;
+using JobApplier.Infrastructure.AI;
 using Microsoft.EntityFrameworkCore;
 
 /// <summary>
@@ -25,6 +27,12 @@ public static class DependencyInjection
         // Repositories
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        services.AddScoped<ICVRepository, CVRepository>();
+
+        // File Handling Services
+        services.AddScoped<IFileStorageService, FileStorageService>();
+        services.AddScoped<ITextExtractionService, TextExtractionService>();
+        services.AddScoped<IOpenAICVParsingService, OpenAICVParsingService>();
 
         // Security Services
         services.AddSingleton<IPasswordHasher, PasswordHasher>();

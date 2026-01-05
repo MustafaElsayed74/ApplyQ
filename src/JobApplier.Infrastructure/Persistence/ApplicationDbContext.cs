@@ -15,6 +15,7 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<User> Users => Set<User>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    public DbSet<CV> CVs => Set<CV>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -62,6 +63,46 @@ public class ApplicationDbContext : DbContext
                 .IsRequired();
             entity.Property(e => e.CreatedAt)
                 .ValueGeneratedOnAdd();
+        });
+
+        // Configure CV entity
+        modelBuilder.Entity<CV>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.UserId)
+                .IsRequired();
+            entity.Property(e => e.FileName)
+                .IsRequired()
+                .HasMaxLength(255);
+            entity.Property(e => e.FileType)
+                .IsRequired()
+                .HasMaxLength(10);
+            entity.Property(e => e.FilePath)
+                .IsRequired();
+            entity.Property(e => e.FileSizeBytes)
+                .IsRequired();
+            entity.Property(e => e.ExtractedText)
+                .IsRequired();
+            entity.Property(e => e.ParsedDataJson)
+                .HasDefaultValue(string.Empty);
+            entity.Property(e => e.IsParsed)
+                .HasDefaultValue(false);
+            entity.Property(e => e.FileChecksum)
+                .IsRequired()
+                .HasMaxLength(64);
+            entity.Property(e => e.CreatedAt)
+                .ValueGeneratedOnAdd();
+
+            // Indexes
+            entity.HasIndex(e => e.UserId);
+            entity.HasIndex(e => new { e.UserId, e.FileChecksum });
+            entity.HasIndex(e => e.IsParsed);
+
+            // Relationship to User
+            entity.HasOne<User>()
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }
