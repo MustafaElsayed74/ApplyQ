@@ -16,6 +16,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<User> Users => Set<User>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     public DbSet<CV> CVs => Set<CV>();
+    public DbSet<JobDescription> JobDescriptions => Set<JobDescription>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -97,6 +98,42 @@ public class ApplicationDbContext : DbContext
             entity.HasIndex(e => e.UserId);
             entity.HasIndex(e => new { e.UserId, e.FileChecksum });
             entity.HasIndex(e => e.IsParsed);
+
+            // Relationship to User
+            entity.HasOne<User>()
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // Configure JobDescription entity
+        modelBuilder.Entity<JobDescription>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.UserId)
+                .IsRequired();
+            entity.Property(e => e.Description)
+                .IsRequired();
+            entity.Property(e => e.SourceType)
+                .IsRequired()
+                .HasMaxLength(10);
+            entity.Property(e => e.SourceImagePath)
+                .HasMaxLength(500);
+            entity.Property(e => e.SourceImageFileName)
+                .HasMaxLength(255);
+            entity.Property(e => e.IsOCRExtracted)
+                .HasDefaultValue(false);
+            entity.Property(e => e.JobTitle)
+                .HasMaxLength(255);
+            entity.Property(e => e.CompanyName)
+                .HasMaxLength(255);
+            entity.Property(e => e.CreatedAt)
+                .ValueGeneratedOnAdd();
+
+            // Indexes
+            entity.HasIndex(e => e.UserId);
+            entity.HasIndex(e => e.CreatedAt);
+            entity.HasIndex(e => e.IsOCRExtracted);
 
             // Relationship to User
             entity.HasOne<User>()
