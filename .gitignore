@@ -1,0 +1,42 @@
+# Visual Studio
+.vs/
+.vscode/
+*.sln.iml
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+bin/
+obj/
+Debug/
+Release/
+
+# User Secrets
+[Uu]ser[Ss]ecrets/
+secrets.json
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+
+# IDE
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+build/
+dist/
+
+# Database
+*.mdf
+*.ldf
