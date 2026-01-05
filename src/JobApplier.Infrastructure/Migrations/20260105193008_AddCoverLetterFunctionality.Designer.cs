@@ -3,6 +3,7 @@ using System;
 using JobApplier.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobApplier.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260105193008_AddCoverLetterFunctionality")]
+    partial class AddCoverLetterFunctionality
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,9 +30,6 @@ namespace JobApplier.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("ExtractedText")
@@ -80,14 +80,11 @@ namespace JobApplier.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IsParsed")
-                        .HasDatabaseName("IX_CV_IsParsed");
+                    b.HasIndex("IsParsed");
 
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("IX_CV_UserId");
+                    b.HasIndex("UserId");
 
-                    b.HasIndex("UserId", "FileChecksum")
-                        .HasDatabaseName("IX_CV_UserId_FileChecksum");
+                    b.HasIndex("UserId", "FileChecksum");
 
                     b.ToTable("CVs");
                 });
@@ -103,9 +100,6 @@ namespace JobApplier.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("GeneratedContent")
@@ -138,21 +132,16 @@ namespace JobApplier.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CVId")
-                        .HasDatabaseName("IX_CoverLetter_CVId");
+                    b.HasIndex("CVId");
 
-                    b.HasIndex("CreatedAt")
-                        .HasDatabaseName("IX_CoverLetter_CreatedAt");
+                    b.HasIndex("CreatedAt");
 
-                    b.HasIndex("JobDescriptionId")
-                        .HasDatabaseName("IX_CoverLetter_JobDescriptionId");
+                    b.HasIndex("JobDescriptionId");
 
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("IX_CoverLetter_UserId");
+                    b.HasIndex("UserId");
 
                     b.HasIndex("CVId", "JobDescriptionId")
-                        .IsUnique()
-                        .HasDatabaseName("IX_CoverLetter_CVId_JobDescriptionId_Unique");
+                        .IsUnique();
 
                     b.ToTable("CoverLetters");
                 });
@@ -169,9 +158,6 @@ namespace JobApplier.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Description")
@@ -211,14 +197,11 @@ namespace JobApplier.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedAt")
-                        .HasDatabaseName("IX_JobDescription_CreatedAt");
+                    b.HasIndex("CreatedAt");
 
-                    b.HasIndex("IsOCRExtracted")
-                        .HasDatabaseName("IX_JobDescription_IsOCRExtracted");
+                    b.HasIndex("IsOCRExtracted");
 
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("IX_JobDescription_UserId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("JobDescriptions");
                 });
@@ -231,9 +214,6 @@ namespace JobApplier.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<DateTime>("ExpiresAt")
@@ -270,9 +250,6 @@ namespace JobApplier.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Email")
@@ -315,51 +292,41 @@ namespace JobApplier.Infrastructure.Migrations
 
             modelBuilder.Entity("JobApplier.Domain.Entities.CV", b =>
                 {
-                    b.HasOne("JobApplier.Domain.Entities.User", "User")
-                        .WithMany("CVs")
+                    b.HasOne("JobApplier.Domain.Entities.User", null)
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("JobApplier.Domain.Entities.CoverLetter", b =>
                 {
-                    b.HasOne("JobApplier.Domain.Entities.CV", "CV")
-                        .WithMany("CoverLetters")
+                    b.HasOne("JobApplier.Domain.Entities.CV", null)
+                        .WithMany()
                         .HasForeignKey("CVId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("JobApplier.Domain.Entities.JobDescription", "JobDescription")
-                        .WithMany("CoverLetters")
+                    b.HasOne("JobApplier.Domain.Entities.JobDescription", null)
+                        .WithMany()
                         .HasForeignKey("JobDescriptionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("JobApplier.Domain.Entities.User", "User")
-                        .WithMany("CoverLetters")
+                    b.HasOne("JobApplier.Domain.Entities.User", null)
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("CV");
-
-                    b.Navigation("JobDescription");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("JobApplier.Domain.Entities.JobDescription", b =>
                 {
-                    b.HasOne("JobApplier.Domain.Entities.User", "User")
-                        .WithMany("JobDescriptions")
+                    b.HasOne("JobApplier.Domain.Entities.User", null)
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("JobApplier.Domain.Entities.RefreshToken", b =>
@@ -371,24 +338,8 @@ namespace JobApplier.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("JobApplier.Domain.Entities.CV", b =>
-                {
-                    b.Navigation("CoverLetters");
-                });
-
-            modelBuilder.Entity("JobApplier.Domain.Entities.JobDescription", b =>
-                {
-                    b.Navigation("CoverLetters");
-                });
-
             modelBuilder.Entity("JobApplier.Domain.Entities.User", b =>
                 {
-                    b.Navigation("CVs");
-
-                    b.Navigation("CoverLetters");
-
-                    b.Navigation("JobDescriptions");
-
                     b.Navigation("RefreshTokens");
                 });
 #pragma warning restore 612, 618

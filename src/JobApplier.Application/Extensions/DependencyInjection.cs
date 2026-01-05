@@ -14,6 +14,7 @@ public static class DependencyInjection
         services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddScoped<CVService>();
         services.AddScoped<JobDescriptionService>();
+        services.AddScoped<CoverLetterService>();
 
         return services;
     }

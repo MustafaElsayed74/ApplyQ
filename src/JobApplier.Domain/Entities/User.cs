@@ -19,8 +19,11 @@ public class User : Entity
     public bool IsActive { get; private set; }
     public DateTime? EmailConfirmedAt { get; private set; }
 
-    // Navigation property - only for EF Core
+    // Navigation properties - only for EF Core
     public virtual ICollection<RefreshToken> RefreshTokens { get; private set; } = new List<RefreshToken>();
+    public virtual ICollection<CV> CVs { get; private set; } = new List<CV>();
+    public virtual ICollection<JobDescription> JobDescriptions { get; private set; } = new List<JobDescription>();
+    public virtual ICollection<CoverLetter> CoverLetters { get; private set; } = new List<CoverLetter>();
 
     public User() { }
 

@@ -30,12 +30,16 @@ public static class DependencyInjection
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<ICVRepository, CVRepository>();
         services.AddScoped<IJobDescriptionRepository, JobDescriptionRepository>();
+        services.AddScoped<ICoverLetterRepository, CoverLetterRepository>();
 
         // File Handling Services
         services.AddScoped<IFileStorageService, FileStorageService>();
         services.AddScoped<ITextExtractionService, TextExtractionService>();
         services.AddScoped<IOpenAICVParsingService, OpenAICVParsingService>();
         services.AddScoped<IOCRExtractionService, OCRExtractionService>();
+
+        // AI Services
+        services.AddScoped<ICoverLetterGenerationService, OpenAICoverLetterService>();
 
         // Security Services
         services.AddSingleton<IPasswordHasher, PasswordHasher>();

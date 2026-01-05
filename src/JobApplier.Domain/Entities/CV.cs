@@ -55,6 +55,16 @@ public class CV : Entity
     /// </summary>
     public string FileChecksum { get; private set; } = string.Empty;
 
+    /// <summary>
+    /// Navigation property - User who owns this CV
+    /// </summary>
+    public virtual User? User { get; private set; }
+
+    /// <summary>
+    /// Navigation property - Cover letters generated from this CV
+    /// </summary>
+    public virtual ICollection<CoverLetter> CoverLetters { get; private set; } = new List<CoverLetter>();
+
     public CV() { }
 
     public CV(

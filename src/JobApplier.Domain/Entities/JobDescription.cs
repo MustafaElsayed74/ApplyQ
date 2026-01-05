@@ -58,6 +58,16 @@ public class JobDescription : Entity
     /// </summary>
     public string? CompanyName { get; private set; }
 
+    /// <summary>
+    /// Navigation property - User who submitted this job description
+    /// </summary>
+    public virtual User? User { get; private set; }
+
+    /// <summary>
+    /// Navigation property - Cover letters generated for this job description
+    /// </summary>
+    public virtual ICollection<CoverLetter> CoverLetters { get; private set; } = new List<CoverLetter>();
+
     private JobDescription() { }
 
     /// <summary>
